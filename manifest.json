@@ -1,24 +1,25 @@
 {
-  "name": "Treino",
+  "id": "/treino-pwa/",
+  "name": "Treino Academia",
   "short_name": "Treino",
-  "start_url": ".",
-  "scope": ".",
+  "start_url": "/treino-pwa/",
+  "scope": "/treino-pwa/",
   "display": "standalone",
   "background_color": "#08060a",
   "theme_color": "#08060a",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "/treino-pwa/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "./icon-512.png",
+      "src": "/treino-pwa/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="gotico">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08060a">
+<title>Treino</title>
+
+<!-- ===== PWA ===== -->
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Treino">
+
+<style>
+/* ================= TEMAS ================= */
+:root{
+  --bg:#08060a; --glow:rgba(124,58,237,.16);
+  --card:#15111a; --card2:#1e1926; --line:#2d2637;
+  --txt:#ece8f1; --muted:#8d8499;
+  --accent:#b98cff; --accent-ink:#170a26;
+  --accent-soft:rgba(185,140,255,.14);
+  --accent-line:rgba(185,140,255,.30);
+  --danger:#ff5d6c;
+  --serif: Georgia,'Palatino Linotype','Times New Roman',serif;
+}
+html[data-tema="abismo"]{
+  --bg:#06090f; --glow:rgba(40,120,220,.18);
+  --card:#101822; --card2:#16212e; --line:#1f2e3e;
+  --txt:#e6eef7; --muted:#8496a8;
+  --accent:#4fb8ff; --accent-ink:#04121c;
+  --accent-soft:rgba(79,184,255,.14);
+  --accent-line:rgba(79,184,255,.30);
+  --danger:#ff6b6b;
+}
+html[data-tema="sangue"]{
+  --bg:#0c0607; --glow:rgba(200,30,60,.18);
+  --card:#1a0f11; --card2:#241519; --line:#2f1b20;
+  --txt:#f2e9ea; --muted:#9b8489;
+  --accent:#ff5d6c; --accent-ink:#25060b;
+  --accent-soft:rgba(255,93,108,.14);
+  --accent-line:rgba(255,93,108,.30);
+  --danger:#ff8a5c;
+}
+html[data-tema="nevoa"]{
+  --bg:#0b0c0e; --glow:rgba(180,200,220,.10);
+  --card:#16181c; --card2:#1e2126; --line:#282c33;
+  --txt:#e8eaee; --muted:#8b919b;
+  --accent:#c3d0dd; --accent-ink:#10151a;
+  --accent-soft:rgba(195,208,221,.14);
+  --accent-line:rgba(195,208,221,.30);
+  --danger:#ff7a7a;
+}
+
+/* ================= BASE ================= */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background-color:var(--bg);
+  background-image:radial-gradient(130% 90% at 50% -10%, var(--glow) 0%, transparent 65%);
+  background-attachment:fixed;
+  color:var(--txt); min-height:100dvh;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:16px; line-height:1.4;
+}
+#app{max-width:520px;margin:0 auto;padding:16px 16px 130px}
+h1,h2,.serif{font-family:var(--serif);font-weight:600;letter-spacing:.5px}
+h1{font-size:21px;margin:0}
+h2{font-size:12px;margin:26px 0 10px;color:var(--muted);font-weight:500;
+   text-transform:uppercase;letter-spacing:1.5px;font-family:inherit}
+
+header{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
+header h1{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.icon-btn{
+  background:var(--card);border:1px solid var(--line);color:var(--txt);
+  width:40px;height:40px;border-radius:12px;font-size:16px;cursor:pointer;
+  display:grid;place-items:center;flex:none;transition:transform .1s;
+}
+.icon-btn:active{transform:scale(.92)}
+
+/* ================= HOME ================= */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card-treino{
+  background:linear-gradient(160deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:18px;padding:18px 14px 14px;
+  color:var(--txt);display:flex;flex-direction:column;gap:4px;
+  align-items:flex-start;cursor:pointer;text-align:left;position:relative;
+  min-height:138px;transition:transform .1s;
+}
+.card-treino:active{transform:scale(.97)}
+.card-treino .letra{
+  font-family:var(--serif);font-size:38px;font-weight:700;color:var(--accent);
+  line-height:1;text-shadow:0 0 24px var(--glow);
+}
+.card-treino .desc{font-size:12px;color:var(--txt);opacity:.85;margin-top:2px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:0}
+.card-treino .sub{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:8px}
+.card-treino .tempo{
+  font-size:11px;color:var(--accent);margin-top:2px;font-weight:700;letter-spacing:.3px;
+  display:flex;align-items:center;gap:4px;
+}
+.badge-troca{
+  position:absolute;top:10px;right:10px;background:rgba(255,93,108,.14);
+  color:var(--danger);font-size:10px;font-weight:700;padding:3px 7px;border-radius:8px;
+  border:1px solid rgba(255,93,108,.35);letter-spacing:.5px;
+}
+
+/* ================= LISTAS ================= */
+.item{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:12px 10px 12px 14px;display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.item-info{flex:1;min-width:0}
+.item-nome{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.item-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+.item-dica{font-size:12px;color:var(--muted);margin-top:5px;opacity:.8;font-style:italic;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.mini-btn{
+  width:34px;height:34px;border-radius:10px;background:transparent;border:1px solid var(--line);
+  color:var(--muted);font-size:13px;cursor:pointer;flex:none;display:grid;place-items:center;
+}
+.mini-btn:active{transform:scale(.92)}
+.mini-btn.del{color:var(--danger)}
+
+.tag-tec{
+  font-size:10px;font-weight:800;letter-spacing:.6px;padding:3px 7px;border-radius:6px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);
+  vertical-align:middle;white-space:nowrap;
+}
+.vazio{color:var(--muted);font-size:14px;text-align:center;padding:26px 10px;line-height:1.6}
+
+/* ================= FORM ================= */
+.form-add{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:16px}
+.form-titulo{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:10px}
+.form-add label{font-size:11.5px;color:var(--muted);display:block;flex:1;letter-spacing:.3px}
+.form-add input,.form-add select,.form-add textarea{
+  width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:11px 12px;font-size:15px;outline:none;margin-top:5px;
+  font-family:inherit;resize:vertical;
+}
+.form-add input:focus,.form-add select:focus,.form-add textarea:focus{border-color:var(--accent)}
+.form-add select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+
+/* ================= BOTÕES ================= */
+.btn{
+  border:1px solid var(--line);border-radius:12px;padding:13px;font-size:15px;font-weight:600;
+  width:100%;cursor:pointer;background:var(--card2);color:var(--txt);margin-top:12px;
+  font-family:inherit;transition:transform .1s;
+}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;
+  box-shadow:0 6px 22px -6px var(--accent)}
+.btn.ghost{background:transparent;color:var(--txt)}
+.btn.danger{background:transparent;color:var(--danger);border-color:rgba(255,93,108,.4)}
+.btn-pequeno{padding:9px 12px;font-size:13px;width:auto;margin:0}
+.row-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.row-btns .btn{margin-top:0}
+.btn-play{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  width:calc(100% - 32px);max-width:488px;
+  background:var(--accent);color:var(--accent-ink);border:0;border-radius:16px;padding:18px;
+  font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;
+  box-shadow:0 10px 30px -8px var(--accent),0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.btn-play:active{transform:translateX(-50%) scale(.98)}
+.btn-play .btn-play-sub{display:block;font-size:11.5px;font-weight:500;opacity:.75;margin-top:2px;letter-spacing:.3px}
+
+/* ================= AVISOS ================= */
+.aviso{
+  background:rgba(255,93,108,.08);border:1px solid rgba(255,93,108,.3);
+  border-radius:14px;padding:13px 14px;margin-bottom:14px;font-size:13.5px;line-height:1.5;
+}
+.aviso b{color:var(--danger)}
+.aviso .acoes{display:flex;gap:8px;margin-top:10px}
+.toast-pulo{
+  background:var(--accent-soft);border:1px solid var(--accent-line);
+  border-radius:12px;padding:10px 13px;margin-bottom:14px;font-size:13px;line-height:1.5;
+}
+.toast-pulo b{color:var(--accent)}
+.toast-retomado{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:10px 13px;margin-bottom:14px;font-size:12.5px;color:var(--muted);
+}
+
+/* ================= DESCRIÇÃO TREINO ================= */
+.desc-treino{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.desc-treino label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.desc-treino input{
+  width:100%;background:transparent;border:0;border-bottom:1px dashed var(--line);
+  color:var(--txt);font-size:15px;padding:7px 0 5px;outline:none;font-family:inherit;
+}
+.desc-treino input:focus{border-bottom-color:var(--accent)}
+
+/* ================= INFO TEMPO (tela treino) ================= */
+.info-tempo{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.info-tempo b{color:var(--accent);font-family:var(--serif);font-size:16px;font-weight:700}
+.info-tempo .divisor{opacity:.3}
+
+/* ================= TOPO DE EXECUÇÃO ================= */
+.topo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.topo-linha{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.4px;margin-bottom:7px}
+.topo-linha span:last-child{color:var(--accent);font-weight:700}
+.topo-linha.tempo{
+  margin-top:9px;margin-bottom:0;padding-top:9px;border-top:1px dashed var(--line);
+  font-size:11.5px;
+}
+.topo-linha.tempo span:first-child{color:var(--accent);font-weight:700}
+.topo-linha.tempo span:last-child{color:var(--muted);font-weight:500}
+.barra{height:5px;background:var(--card2);border-radius:3px;overflow:hidden}
+.barra i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.fila{display:flex;gap:6px;overflow-x:auto;margin-top:11px;padding-bottom:2px;scrollbar-width:none}
+.fila::-webkit-scrollbar{display:none}
+.chip{
+  flex:none;background:var(--card2);border:1px solid var(--line);color:var(--muted);
+  font-size:11.5px;padding:6px 9px;border-radius:8px;cursor:pointer;font-family:inherit;
+  white-space:nowrap;
+}
+.chip:active{transform:scale(.95)}
+.chip.atual{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.topo-sub{font-size:10.5px;color:var(--muted);margin-top:7px;text-align:right;letter-spacing:.3px}
+
+/* ================= EXECUÇÃO ================= */
+.exec-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.exec-top{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.ex-nome{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.2}
+.serie-badge{
+  display:inline-block;background:var(--accent-soft);color:var(--accent);
+  padding:5px 12px;border-radius:20px;font-size:12.5px;font-weight:700;
+  margin-top:12px;letter-spacing:.4px;border:1px solid var(--accent-line);
+}
+.alvo{color:var(--muted);font-size:13.5px;margin-top:10px}
+.dica{
+  margin-top:14px;background:var(--card2);border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:11px 13px;
+}
+.dica-t{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);font-weight:700;margin-bottom:4px}
+.dica-c{font-size:13.5px;color:var(--txt);opacity:.9;line-height:1.5}
+
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.inputs.um{grid-template-columns:1fr}
+.inputs label{font-size:11.5px;color:var(--muted);letter-spacing:.3px}
+.inputs input{
+  width:100%;margin-top:6px;background:var(--card2);border:1px solid var(--line);
+  color:var(--txt);border-radius:12px;padding:14px;font-size:21px;font-weight:700;
+  text-align:center;outline:none;font-family:var(--serif);
+}
+.inputs input:focus{border-color:var(--accent)}
+.progresso{text-align:center;color:var(--muted);font-size:12.5px;margin-top:16px;letter-spacing:.3px}
+
+/* ================= TIMER ================= */
+.timer-card{
+  background:var(--card);border:1px solid var(--line);border-radius:22px;
+  padding:22px 20px 20px;transition:border-color .3s, box-shadow .3s;
+}
+.anel-wrap{position:relative;width:230px;max-width:78%;aspect-ratio:1;margin:0 auto}
+.anel{width:100%;height:100%;transform:rotate(-90deg);display:block}
+.anel .trilha{fill:none;stroke:var(--card2);stroke-width:7}
+.anel .prog{
+  fill:none;stroke:var(--accent);stroke-width:7;stroke-linecap:round;
+  transition:stroke-dashoffset .3s linear, stroke .3s;
+}
+.timer-centro{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+}
+.timer{
+  font-family:var(--serif);font-size:52px;font-weight:700;
+  font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1;
+  color:var(--accent);transition:color .3s;
+}
+.timer-label{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:2px}
+.timer.pulso{animation:pulsoNum .4s ease-out}
+@keyframes pulsoNum{0%{transform:scale(1.14);opacity:.75}100%{transform:scale(1);opacity:1}}
+.timer-card.urgente{border-color:var(--danger);animation:glowUrgente 1s ease-in-out infinite}
+.timer-card.urgente .prog{stroke:var(--danger)}
+.timer-card.urgente .timer{color:var(--danger)}
+@keyframes glowUrgente{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,93,108,0)}
+  50%{box-shadow:0 0 26px 2px rgba(255,93,108,.28)}
+}
+.prox{color:var(--txt);font-size:14.5px;margin:20px 0 3px;text-align:center}
+.prox-sub{color:var(--muted);font-size:12.5px;text-align:center}
+
+/* ================= HISTÓRICO ================= */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 6px;text-align:center}
+.stat .n{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--accent);line-height:1}
+.stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:5px}
+.hist-item{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:9px;overflow:hidden}
+.hist-linha{display:flex;align-items:center;gap:11px;padding:12px 14px;cursor:pointer}
+.hist-letra{
+  width:34px;height:34px;border-radius:10px;background:var(--card2);border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--serif);font-weight:700;color:var(--accent);flex:none;
+}
+.hist-info{flex:1;min-width:0}
+.hist-data{font-size:13.5px;font-weight:600}
+.hist-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.hist-seta{color:var(--muted);font-size:12px}
+.hist-det{padding:10px 14px 12px;border-top:1px solid var(--line)}
+
+.grupo{background:var(--card2);border-radius:10px;padding:9px 11px;margin-bottom:6px}
+.grupo:last-child{margin-bottom:0}
+.grupo-titulo{font-weight:600;font-size:12.5px;margin-bottom:5px;color:var(--accent)}
+.grupo-item{font-size:12px;padding:2px 0;display:flex;justify-content:space-between;gap:10px}
+.grupo-item span:first-child{color:var(--muted)}
+.pendentes{
+  font-size:11.5px;color:var(--muted);margin-top:8px;padding-top:8px;
+  border-top:1px dashed var(--line);line-height:1.5;
+}
+
+/* ================= CONFIG ================= */
+.temas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tema-card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;
+  cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;
+}
+.tema-card.ativo{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.tema-paleta{display:flex;gap:5px;margin-bottom:9px}
+.tema-paleta i{width:100%;height:20px;border-radius:5px;display:block}
+.tema-nome{font-size:13.5px;font-weight:600}
+.tema-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+.opcao{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:14px;margin-bottom:9px;
+}
+.opcao .txt{font-size:14px;font-weight:500}
+.opcao .sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.switch{
+  width:50px;height:29px;border-radius:20px;background:var(--card2);border:1px solid var(--line);
+  position:relative;cursor:pointer;flex:none;transition:background .2s;
+}
+.switch::after{
+  content:'';position:absolute;top:2px;left:2px;width:23px;height:23px;border-radius:50%;
+  background:var(--muted);transition:transform .2s, background .2s;
+}
+.switch.on{background:var(--accent-soft);border-color:var(--accent)}
+.switch.on::after{transform:translateX(21px);background:var(--accent)}
+textarea#backup-texto{
+  width:100%;min-height:90px;background:var(--card2);border:1px solid var(--line);
+  color:var(--muted);border-radius:12px;padding:11px;font-size:11.5px;
+  font-family:ui-monospace,Menlo,monospace;outline:none;resize:vertical;margin-top:10px;
+}
+.rodape{text-align:center;color:var(--muted);font-size:11px;margin-top:34px;line-height:1.7}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   CONSTANTES
+============================================================ */
+const LS_KEY    = 'treino_app_v2';
+const LS_ANTIGO = 'treino_app_v1';
+const LS_SESSAO = 'treino_sessao_v1';
+const LETRAS    = ['A','B','C','D'];
+
+const TEMPO_SERIE_PADRAO = 35;   // segundos estimados por série de peso/corpo
+
+const TECNICAS = {
+  '':        { nome:'Nenhuma',            curto:'' },
+  'drop':    { nome:'Drop set',           curto:'DROP' },
+  'rest':    { nome:'Rest-pause',         curto:'REST-PAUSE' },
+  'bi':      { nome:'Bi-set / Tri-set',   curto:'BI-SET' },
+  'pico':    { nome:'Pico de contração',  curto:'PICO' },
+  'piramide':{ nome:'Pirâmide',           curto:'PIRÂMIDE' },
+  'negativa':{ nome:'Negativas forçadas', curto:'NEGATIVA' },
+  'iso':     { nome:'Isometria',          curto:'ISO' }
+};
+
+const TIPOS = {
+  'peso':  'Peso e repetições',
+  'corpo': 'Só repetições (peso corporal)',
+  'iso':   'Isometria (tempo)'
+};
+
+const TEMAS = [
+  { id:'gotico', nome:'Gótico',  desc:'Roxo e carmesim', cores:['#08060a','#15111a','#b98cff'] },
+  { id:'abismo', nome:'Abismo',  desc:'Azul profundo',   cores:['#06090f','#101822','#4fb8ff'] },
+  { id:'sangue', nome:'Sangue',  desc:'Vermelho escuro', cores:['#0c0607','#1a0f11','#ff5d6c'] },
+  { id:'nevoa',  nome:'Névoa',   desc:'Prata e cinza',   cores:['#0b0c0e','#16181c','#c3d0dd'] }
+];
+
+/* ============================================================
+   ESTADO
+============================================================ */
+let app = carregar();
+const ui = {
+  tela:'home',
+  letra:null,
+  editando:null,
+  exec:null,
+  histAberto:null,
+  skipFeedback:null,
+  retomadoEm:0
+};
+
+/* ============================================================
+   UTILIDADES
+============================================================ */
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmt(s){
+  s = Math.max(0, Math.floor(s));
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+function fmtDur(s){
+  s = Math.round(s||0);
+  if (s < 60) return s + 's';
+  const m = Math.floor(s/60), r = s%60;
+  return m + ' min' + (r ? ' ' + r + 's' : '');
+}
+function fmtData(ts){
+  const d = new Date(ts);
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) +
+         ' · ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+function fmtReps(e){
+  return e.repsMin === e.repsMax ? `${e.repsMin}` : `${e.repsMin}–${e.repsMax}`;
+}
+function resumoExercicio(e){
+  if (e.tipo === 'iso') return `${e.series} × ${e.tempo}s isometria · descanso ${e.descanso}s`;
+  const carga = e.tipo === 'peso' ? ` · ${e.carga} kg` : ' · peso corporal';
+  return `${e.series} × ${fmtReps(e)} reps${carga} · descanso ${e.descanso}s`;
+}
+function alvoExercicio(e){
+  if (e.tipo === 'iso') return `Alvo: ${e.tempo}s de isometria · descanso ${e.descanso}s`;
+  const carga = e.tipo === 'peso' ? ` · ${e.carga} kg` : ' · peso corporal';
+  return `Alvo: ${fmtReps(e)} reps${carga} · descanso ${e.descanso}s`;
+}
+function descRegistro(r){
+  const p = [];
+  if (r.segundos != null) p.push(r.segundos + 's');
+  if (r.reps != null) p.push(r.reps + ' reps');
+  if (r.carga != null) p.push(r.carga + ' kg');
+  return p.join(' · ');
+}
+
+/* ============================================================
+   ESTIMATIVA DE TEMPO
+============================================================ */
+function tempoExecSerie(e){
+  return e.tipo === 'iso' ? e.tempo : TEMPO_SERIE_PADRAO;
+}
+function tempoEstimadoExercicio(e){
+  return e.series * (tempoExecSerie(e) + e.descanso);
+}
+function tempoEstimadoTreino(treino){
+  if (!treino || !treino.exercicios || !treino.exercicios.length) return 0;
+  let total = 0;
+  treino.exercicios.forEach(e => { total += tempoEstimadoExercicio(e); });
+  const last = treino.exercicios[treino.exercicios.length - 1];
+  total -= last.descanso;
+  return Math.max(0, total);
+}
+function tempoRestanteEstimado(x){
+  if (!x || !x.fila.length) return 0;
+  const treino = app.treinos[x.letra];
+  if (!treino) return 0;
+  let total = 0;
+  x.fila.forEach((idx, pos) => {
+    const e = treino.exercicios[idx];
+    if (!e) return;
+    let rem = e.series;
+    if (pos === 0) rem -= (x.seriesFeitas[idx] || 0);
+    if (rem <= 0) return;
+    total += rem * (tempoExecSerie(e) + e.descanso);
+  });
+  if (x.fase === 'descanso' && x.restante > 0) total += x.restante;
+  const lastIdx = x.fila[x.fila.length - 1];
+  const lastEx = treino.exercicios[lastIdx];
+  if (lastEx) total -= lastEx.descanso;
+  return Math.max(0, total);
+}
+function fmtMin(seg){
+  seg = Math.max(0, Math.round(seg));
+  if (seg < 60) return '< 1 min';
+  const m = Math.round(seg / 60);
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return h + 'h' + (r ? ' ' + r + 'min' : '');
+}
+function horaFim(seg){
+  const d = new Date(Date.now() + Math.max(0, seg) * 1000);
+  return d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+}
+
+/* ============================================================
+   DADOS / PERSISTÊNCIA
+============================================================ */
+function normEx(e){
+  e = e || {};
+  const tipo = Object.prototype.hasOwnProperty.call(TIPOS, e.tipo) ? e.tipo : 'peso';
+  const tec  = TECNICAS.hasOwnProperty(e.tecnica) ? e.tecnica : '';
+  const base = Math.max(1, parseInt(e.reps, 10) || 10);
+  const repsMin = Math.max(1, parseInt(e.repsMin, 10) || base);
+  const repsMax = Math.max(repsMin, parseInt(e.repsMax, 10) || base);
+  return {
+    id: e.id || uid(),
+    nome: (e.nome || 'Exercício').toString(),
+    tipo: tipo,
+    series: Math.max(1, parseInt(e.series,10) || 3),
+    repsMin: repsMin,
+    repsMax: repsMax,
+    tempo: Math.max(1, parseInt(e.tempo,10) || 30),
+    carga: Number(e.carga) || 0,
+    descanso: Number.isFinite(Number(e.descanso)) ? Math.max(0, Math.round(Number(e.descanso))) : 60,
+    tecnica: tec,
+    dica: (e.dica || '').toString()
+  };
+}
+
+function dadosIniciais(){
+  return {
+    treinos: {
+      A: { descricao:'Peito, tríceps e ombro', exercicios:[
+        normEx({ nome:'Supino reto', series:4, repsMin:8, repsMax:12, carga:40, descanso:90,
+                 dica:'Escápulas retraídas, desça controlado até o peito.' }),
+        normEx({ nome:'Tríceps pulley', series:3, repsMin:10, repsMax:15, carga:25, descanso:60 }),
+        normEx({ nome:'Prancha', tipo:'iso', series:3, tempo:45, descanso:45,
+                 dica:'Corpo alinhado, abdômen contraído o tempo todo.' })
+      ]},
+      B: { descricao:'Costas e bíceps', exercicios:[] },
+      C: { descricao:'Pernas', exercicios:[] },
+      D: { descricao:'Ombros e abdômen', exercicios:[] }
+    },
+    historico: [],
+    config: { tema:'gotico', som:true, vibracao:true, dispensado:{} }
+  };
+}
+
+function normalizarApp(d){
+  const base = dadosIniciais();
+  if (!d || typeof d !== 'object') return base;
+
+  const out = {
+    treinos: {},
+    historico: [],
+    config: Object.assign({}, base.config, d.config || {})
+  };
+  out.config.dispensado = Object.assign({}, (d.config && d.config.dispensado) || {});
+
+  LETRAS.forEach(l => {
+    const t = d.treinos && d.treinos[l];
+    if (Array.isArray(t)) {
+      out.treinos[l] = { descricao:'', exercicios: t.map(normEx) };
+    } else if (t && Array.isArray(t.exercicios)) {
+      out.treinos[l] = { descricao:(t.descricao||'').toString(), exercicios: t.exercicios.map(normEx) };
+    } else {
+      out.treinos[l] = { descricao:'', exercicios:[] };
+    }
+  });
+
+  if (Array.isArray(d.historico)){
+    out.historico = d.historico.filter(h => h && h.letra).map(h => ({
+      id: h.id || uid(),
+      data: h.data || Date.now(),
+      letra: LETRAS.indexOf(h.letra) >= 0 ? h.letra : 'A',
+      duracao: Number(h.duracao) || 0,
+      registros: Array.isArray(h.registros) ? h.registros : [],
+      pendentes: Array.isArray(h.pendentes) ? h.pendentes : []
+    }));
+  }
+  return out;
+}
+
+function carregar(){
+  try {
+    const v2 = localStorage.getItem(LS_KEY);
+    if (v2) return normalizarApp(JSON.parse(v2));
+    const v1 = localStorage.getItem(LS_ANTIGO);
+    if (v1) return normalizarApp({ treinos: JSON.parse(v1) });
+  } catch(e){ console.warn('Falha ao carregar dados', e); }
+  return dadosIniciais();
+}
+function salvarApp(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(app)); }
+  catch(e){ console.warn('Falha ao salvar', e); }
+}
+
+/* ---- Sessão em andamento (sobrevive a sair do navegador) ---- */
+function salvarSessao(){
+  try {
+    if (ui.exec && ui.exec.fase !== 'fim'){
+      localStorage.setItem(LS_SESSAO, JSON.stringify(ui.exec));
+    } else {
+      localStorage.removeItem(LS_SESSAO);
+    }
+  } catch(e){}
+}
+function limparSessao(){
+  try { localStorage.removeItem(LS_SESSAO); } catch(e){}
+}
+function carregarSessao(){
+  try {
+    const raw = localStorage.getItem(LS_SESSAO);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || !s.letra || !Array.isArray(s.fila)) return null;
+    return s;
+  } catch(e){ return null; }
+}
+
+/* ============================================================
+   WAKE LOCK (mantém a tela ligada durante o treino)
+============================================================ */
+let wakeLock = null;
+
+async function solicitarWakeLock(){
+  if (!('wakeLock' in navigator)) return;
+  if (!ui.exec || ui.exec.fase === 'fim') return;
+  if (wakeLock) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null;
+    });
+  } catch (err){
+    wakeLock = null;
+    console.warn('Wake Lock indisponível:', err && err.message);
+  }
+}
+function liberarWakeLock(){
+  if (wakeLock){
+    try { wakeLock.release(); } catch(e){}
+    wakeLock = null;
+  }
+}
+
+/* ============================================================
+   SOM / VIBRAÇÃO
+============================================================ */
+let actx = null;
+let busComp = null;
+
+function ac(){
+  try {
+    if (!actx){
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      actx = new C();
+    }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  } catch(e){ return null; }
+}
+function bus(){
+  const c = ac(); if (!c) return null;
+  if (!busComp){
+    try {
+      busComp = c.createDynamicsCompressor();
+      busComp.threshold.value = -2;
+      busComp.knee.value      = 6;
+      busComp.ratio.value     = 20;
+      busComp.attack.value    = 0.002;
+      busComp.release.value   = 0.10;
+      busComp.connect(c.destination);
+    } catch(e){ busComp = null; }
+  }
+  return busComp || c.destination;
+}
+function tom(freq, dur, tipo, vol, ataque){
+  if (!app.config.som) return;
+  const c = ac(); if (!c) return;
+  const dest = bus(); if (!dest) return;
+  try {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = tipo || 'square';
+    o.frequency.value = freq;
+    const t = c.currentTime;
+    const atk = ataque == null ? 0.003 : ataque;
+    const v   = vol == null ? 0.40 : vol;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(v, t + atk);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(dest);
+    o.start(t); o.stop(t + dur + 0.03);
+  } catch(e){}
+}
+function somTick(){ tom(1100, 0.08, 'square', 0.32); }
+function somAviso10(){ tom(760, 0.16, 'square', 0.45); }
+function somContagemFinal(n){
+  const vol = 0.45 + (5 - n) * 0.04;
+  const rep = n <= 2 ? 3 : 2;
+  for (let i = 0; i < rep; i++){
+    setTimeout(() => tom(1200, 0.08, 'square', vol), i * 110);
+  }
+}
+function somInicio(){
+  tom(520, 0.12, 'triangle', 0.38);
+  setTimeout(()=>tom(780, 0.14, 'triangle', 0.38), 100);
+}
+function somFim(){
+  const ciclo = () => {
+    tom(880, 0.18, 'square', 0.55);
+    setTimeout(()=>tom(880, 0.18, 'square', 0.55), 210);
+    setTimeout(()=>tom(1320, 0.32, 'square', 0.62), 420);
+  };
+  ciclo();
+  setTimeout(ciclo, 900);
+  setTimeout(ciclo, 1800);
+}
+function somPulo(){
+  tom(440, 0.10, 'triangle', 0.34);
+  setTimeout(()=>tom(330, 0.12, 'triangle', 0.34), 95);
+}
+function vib(p){
+  if (!app.config.vibracao) return;
+  if (navigator.vibrate) { try { navigator.vibrate(p); } catch(e){} }
+}
+document.addEventListener('pointerdown', function despertar(){ ac(); }, { once:true });
+
+/* ============================================================
+   TIMER
+============================================================ */
+const R_ANEL = 54;
+const CIRC   = 2 * Math.PI * R_ANEL;
+let timerId  = null;
+
+function pararTimer(){ if (timerId){ clearInterval(timerId); timerId = null; } }
+
+function iniciarDescanso(seg){
+  const x = ui.exec;
+  if (!x) return;
+  x.fase = 'descanso';
+  x.restTotal = seg;
+  x.restante = seg;
+  x.restEndsAt = Date.now() + seg * 1000;
+  salvarSessao();
+  render();
+  somInicio();
+  vib(70);
+  iniciarTimer();
+}
+
+function iniciarTimer(){
+  pararTimer();
+  let ultimoSeg = -1;
+  timerId = setInterval(() => {
+    const x = ui.exec;
+    if (!x || x.fase !== 'descanso'){ pararTimer(); return; }
+
+    const rest = Math.max(0, Math.ceil((x.restEndsAt - Date.now()) / 1000));
+    x.restante = rest;
+
+    if (rest <= 0){ pararTimer(); encerrarDescanso(); return; }
+
+    if (rest !== ultimoSeg){
+      ultimoSeg = rest;
+      if (rest === 10){
+        somAviso10();
+        vib(60);
+      } else if (rest >= 1 && rest <= 5){
+        somContagemFinal(rest);
+        vib([50, 40, 50]);
+      }
+      atualizarTimerDOM();
+    }
+  }, 250);
+}
+
+function atualizarTimerDOM(){
+  const x = ui.exec;
+  if (!x) return;
+  const el   = document.getElementById('timer-text');
+  const anel = document.getElementById('anel-prog');
+  const card = document.getElementById('timer-card');
+  if (el){
+    el.textContent = fmt(x.restante);
+    el.classList.remove('pulso');
+    void el.offsetWidth;
+    el.classList.add('pulso');
+  }
+  if (anel){
+    const frac = x.restTotal > 0 ? Math.max(0, Math.min(1, x.restante / x.restTotal)) : 0;
+    anel.style.strokeDashoffset = (CIRC * (1 - frac)).toFixed(2);
+  }
+  if (card) card.classList.toggle('urgente', x.restante <= 5);
+
+  /* atualiza também o tempo restante no topo */
+  const rEl = document.getElementById('topo-restam');
+  const fEl = document.getElementById('topo-fim');
+  if (rEl && fEl){
+    const seg = tempoRestanteEstimado(x);
+    rEl.textContent = '⏱ restam ~' + fmtMin(seg);
+    fEl.textContent = 'fim ~' + horaFim(seg);
+  }
+}
+
+function encerrarDescanso(){
+  somFim();
+  vib([220, 100, 220, 100, 220]);
+  const x = ui.exec;
+  if (!x) return;
+  x.fase = 'ativa';
+  x.restante = 0;
+  x.restEndsAt = 0;
+  salvarSessao();
+  render();
+}
+function pularDescanso(){
+  pararTimer();
+  if (!ui.exec) return;
+  ui.exec.fase = 'ativa';
+  ui.exec.restante = 0;
+  ui.exec.restEndsAt = 0;
+  salvarSessao();
+  render();
+}
+function addTempo(seg){
+  const x = ui.exec;
+  if (!x || x.fase !== 'descanso') return;
+  x.restEndsAt += seg * 1000;
+  x.restante = Math.max(1, Math.ceil((x.restEndsAt - Date.now()) / 1000));
+  x.restTotal = Math.max(x.restTotal, x.restante);
+  salvarSessao();
+  atualizarTimerDOM();
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render(){
+  document.documentElement.dataset.tema = app.config.tema || 'gotico';
+  const appEl = document.getElementById('app');
+  let html = '';
+  switch (ui.tela){
+    case 'treino':    html = telaTreino();    break;
+    case 'exec':      html = telaExec();      break;
+    case 'historico': html = telaHistorico(); break;
+    case 'config':    html = telaConfig();    break;
+    default:          html = telaHome();
+  }
+  appEl.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+/* ---------------- HOME ---------------- */
+function telaHome(){
+  const totalHist = app.historico.length;
+  return `
+    <header>
+      <h1>Treinos</h1>
+      <button class="icon-btn" onclick="abrirHistorico()" title="Histórico">☰</button>
+      <button class="icon-btn" onclick="abrirConfig()" title="Configurações">⚙</button>
+    </header>
+
+    <div class="grid">
+      ${LETRAS.map(l => {
+        const t = app.treinos[l];
+        const n = t.exercicios.length;
+        const execs = contagemLetra(l);
+        const troca = precisaTrocar(l);
+        const est = tempoEstimadoTreino(t);
+        return `<button class="card-treino" onclick="abrirTreino('${l}')">
+          ${troca ? '<span class="badge-troca">TROCAR</span>' : ''}
+          <span class="letra">${l}</span>
+          <span class="desc">${t.descricao ? esc(t.descricao) : '<i style="opacity:.5">sem descrição</i>'}</span>
+          ${est ? `<span class="tempo">⏱ ~${fmtMin(est)}</span>` : ''}
+          <span class="sub">${n ? n + (n === 1 ? ' exercício' : ' exercícios') : 'vazio'}${execs ? ' · ' + execs + 'x' : ''}</span>
+        </button>`;
+      }).join('')}
+    </div>
+
+    <p class="rodape">
+      ${totalHist
+        ? totalHist + (totalHist === 1 ? ' treino no histórico' : ' treinos no histórico')
+        : 'Nenhum treino registrado ainda'}
+    </p>
+  `;
+}
+
+/* ---------------- TREINO ---------------- */
+function telaTreino(){
+  const l = ui.letra;
+  const t = app.treinos[l];
+  const ed = ui.editando !== null ? t.exercicios[ui.editando] : null;
+  const execs = contagemLetra(l);
+  const troca = precisaTrocar(l);
+  const tipoSel = ed ? ed.tipo : 'peso';
+  const est = tempoEstimadoTreino(t);
+
+  return `
+    <header>
+      <button class="icon-btn" onclick="irHome()">←</button>
+      <h1>Treino ${l}</h1>
+    </header>
+
+    <div class="desc-treino">
+      <label>Descrição do treino</label>
+      <input id="desc-treino" placeholder="Ex.: costas, bíceps e abdômen"
+             value="${esc(t.descricao)}" onchange="salvarDescricao(this.value)">
+    </div>
+
+    ${t.exercicios.length ? `
+      <div class="info-tempo">
+        <span>⏱ Tempo estimado</span>
+        <b>~${fmtMin(est)}</b>
+      </div>` : ''
+    }
+
+    ${troca ? `
+      <div class="aviso">
+        <b>Hora de trocar a ficha!</b><br>
+        Você já executou o treino ${l} <b>${execs} vezes</b>.
+        Considere mudar os exercícios, as séries ou a ordem para continuar evoluindo.
+        <div class="acoes">
+          <button class="btn ghost btn-pequeno" onclick="dispensarTroca('${l}')">Já troquei / dispensar</button>
+        </div>
+      </div>` : ''
+    }
+
+    ${t.exercicios.length
+      ? t.exercicios.map((e,i) => `
+        <div class="item">
+          <div class="item-info">
+            <div class="item-nome">
+              ${esc(e.nome)}
+              ${e.tecnica ? `<span class="tag-tec">${TECNICAS[e.tecnica].curto}</span>` : ''}
+              ${e.tipo === 'iso' ? '<span class="tag-tec">ISO</span>' : ''}
+              ${e.tipo === 'corpo' ? '<span class="tag-tec">CORPO</span>' : ''}
+            </div>
+            <div class="item-sub">${resumoExercicio(e)}</div>
+            ${e.dica ? `<div class="item-dica">“${esc(e.dica)}”</div>` : ''}
+          </div>
+          <button class="mini-btn" onclick="editarExercicio(${i})" title="Editar">✎</button>
+          <button class="mini-btn del" onclick="excluirExercicio(${i})" title="Excluir">✕</button>
+        </div>`).join('')
+      : `<p class="vazio">Nenhum exercício ainda.<br>Adicione o primeiro abaixo.</p>`
+    }
+
+    <div class="form-add" id="form-add">
+      <div class="form-titulo">${ed ? 'Editar exercício' : 'Novo exercício'}</div>
+
+      <label>Exercício
+        <input id="f-nome" placeholder="Ex.: Supino reto" value="${ed ? esc(ed.nome) : ''}">
+      </label>
+
+      <label style="margin-top:10px">Tipo
+        <select id="f-tipo" onchange="aoMudarTipo()">
+          ${Object.keys(TIPOS).map(k =>
+            `<option value="${k}" ${tipoSel === k ? 'selected' : ''}>${TIPOS[k]}</option>`
+          ).join('')}
+        </select>
+      </label>
+
+      <div class="row">
+        <label>Séries<input id="f-series" type="number" inputmode="numeric" min="1" value="${ed ? ed.series : 3}"></label>
+        <label>Descanso (s)<input id="f-descanso" type="number" inputmode="numeric" min="0" value="${ed ? ed.descanso : 60}"></label>
+      </div>
+
+      <div class="row" id="linha-reps" style="${tipoSel === 'iso' ? 'display:none' : ''}">
+        <label>Reps mín<input id="f-repsMin" type="number" inputmode="numeric" min="1" value="${ed ? ed.repsMin : 10}"></label>
+        <label>Reps máx<input id="f-repsMax" type="number" inputmode="numeric" min="1" value="${ed ? ed.repsMax : 12}"></label>
+      </div>
+
+      <div class="row" id="linha-tempo" style="${tipoSel === 'iso' ? '' : 'display:none'}">
+        <label style="grid-column:1/-1">Tempo (segundos)<input id="f-tempo" type="number" inputmode="numeric" min="1" value="${ed ? ed.tempo : 30}"></label>
+      </div>
+
+      <div class="row" id="linha-carga" style="${tipoSel === 'peso' ? '' : 'display:none'}">
+        <label style="grid-column:1/-1">Carga (kg)<input id="f-carga" type="number" inputmode="decimal" min="0" step="0.5" value="${ed ? ed.carga : 20}"></label>
+      </div>
+
+      <label style="margin-top:10px">Técnica avançada (opcional)
+        <select id="f-tecnica">
+          ${Object.keys(TECNICAS).map(k =>
+            `<option value="${k}" ${ed && ed.tecnica === k ? 'selected' : ''}>${TECNICAS[k].nome}</option>`
+          ).join('')}
+        </select>
+      </label>
+
+      <label style="margin-top:10px">Dica de execução (opcional)
+        <textarea id="f-dica" rows="2" placeholder="Ex.: cotovelos próximos ao corpo, desça em 3s">${ed ? esc(ed.dica) : ''}</textarea>
+      </label>
+
+      <button class="btn primary" onclick="salvarExercicio()">${ed ? 'Salvar alterações' : '+ Adicionar exercício'}</button>
+      ${ed ? `<button class="btn ghost" onclick="cancelarEdicao()">Cancelar</button>` : ''}
+    </div>
+
+    ${t.exercicios.length ? `
+      <button class="btn-play" onclick="iniciarTreino()">
+        ▶ Iniciar treino ${l}
+        <span class="btn-play-sub">⏱ ~${fmtMin(est)} estimado</span>
+      </button>` : ''}
+  `;
+}
+
+/* ---------------- TOPO DE EXECUÇÃO ---------------- */
+function blocoTopo(x){
+  const treino = app.treinos[x.letra];
+  const total = treino.exercicios.length;
+
+  let totalSeries = 0;
+  treino.exercicios.forEach(e => { totalSeries += e.series; });
+  const feitas = x.registros.length;
+  const pct = totalSeries ? Math.min(100, Math.round(feitas / totalSeries * 100)) : 0;
+
+  const pos = Math.max(1, total - x.fila.length + 1);
+  const restantes = Math.max(0, x.fila.length - 1);
+
+  const segRest = tempoRestanteEstimado(x);
+
+  const chips = x.fila.length > 1
+    ? `<div class="fila">
+        ${x.fila.map((idx, p) => {
+          const ex = treino.exercicios[idx];
+          if (!ex) return '';
+          const nome = ex.nome.length > 18 ? ex.nome.slice(0,17) + '…' : ex.nome;
+          const sFeitas = x.seriesFeitas[idx] || 0;
+          const extra = ex.series > 1 ? ` ${sFeitas}/${ex.series}` : '';
+          return `<button class="chip ${p === 0 ? 'atual' : ''}" onclick="irParaExercicio(${p})">${esc(nome)}${extra}</button>`;
+        }).join('')}
+      </div>`
+    : '';
+
+  return `
+    <div class="topo">
+      <div class="topo-linha">
+        <span>Exercício ${pos} de ${total}</span>
+        <span>${pct}% · faltam ${restantes}</span>
+      </div>
+      <div class="barra"><i style="width:${pct}%"></i></div>
+      <div class="topo-linha tempo">
+        <span id="topo-restam">⏱ restam ~${fmtMin(segRest)}</span>
+        <span id="topo-fim">fim ~${horaFim(segRest)}</span>
+      </div>
+      ${chips}
+    </div>
+  `;
+}
+
+/* ---------------- EXECUÇÃO ---------------- */
+function telaExec(){
+  const x = ui.exec;
+  if (!x){ ui.tela = 'home'; return telaHome(); }
+
+  const treino = app.treinos[x.letra];
+
+  /* ---- Fim ---- */
+  if (x.fase === 'fim'){
+    const temPend = x.pendentes && x.pendentes.length > 0;
+    const grupos = agruparRegistros(x.registros);
+    return `
+      <header><h1>${temPend ? 'Treino encerrado' : 'Treino concluído'}</h1></header>
+      <div class="exec-card">
+        <div class="ex-nome">${temPend ? 'Sessão encerrada.' : 'Bom trabalho.'}</div>
+        <div class="serie-badge">Treino ${x.letra} · ${fmtDur(x.duracao)}</div>
+        <div class="progresso">${x.registros.length} série(s) salva(s) no histórico</div>
+      </div>
+      <div style="margin-top:16px">
+        ${grupos.length ? grupos.map(g => `
+          <div class="grupo">
+            <div class="grupo-titulo">${esc(g.nome)}</div>
+            ${g.itens.map(r => `<div class="grupo-item"><span>${r.serie}ª série</span><span>${descRegistro(r)}</span></div>`).join('')}
+          </div>`).join('') : ''}
+        ${temPend ? `<div class="pendentes">Não realizados: ${x.pendentes.map(esc).join(', ')}</div>` : ''}
+      </div>
+      <button class="btn primary" onclick="irHome()">Voltar ao início</button>
+      <button class="btn ghost" onclick="abrirHistorico()">Ver histórico</button>
+    `;
+  }
+
+  if (!x.fila.length){ irHome(); return ''; }
+
+  const cur = x.fila[0];
+  const e = treino.exercicios[cur];
+  if (!e){ irHome(); return ''; }
+
+  const serieAtual = (x.seriesFeitas[cur] || 0) + 1;
+  const totalSeriesFeitas = x.registros.length;
+  const restantes = x.fila.length;
+
+  const bannerSkip = (ui.skipFeedback && (Date.now() - ui.skipFeedback.ts < 4200))
+    ? `<div class="toast-pulo">${
+        ui.skipFeedback.tipo === 'ir'
+          ? `↪ Indo para: <b>${esc(ui.skipFeedback.nome)}</b> — o anterior vai para o fim da fila.`
+          : `⏭ Pulado: <b>${esc(ui.skipFeedback.nome)}</b> — volta para a fila e você faz depois.`
+      }</div>`
+    : '';
+
+  const bannerRetomado = (ui.retomadoEm && (Date.now() - ui.retomadoEm < 6000))
+    ? `<div class="toast-retomado">Sessão retomada de onde você parou.</div>`
+    : '';
+
+  /* ---- Descanso ---- */
+  if (x.fase === 'descanso'){
+    const frac = x.restTotal > 0 ? Math.max(0, Math.min(1, x.restante / x.restTotal)) : 0;
+    const off  = CIRC * (1 - frac);
+    return `
+      <header>
+        <button class="icon-btn" onclick="sairTreino()">✕</button>
+        <h1>Treino ${x.letra}</h1>
+      </header>
+
+      ${bannerRetomado}
+      ${blocoTopo(x)}
+      ${bannerSkip}
+
+      <div class="timer-card ${x.restante <= 5 ? 'urgente' : ''}" id="timer-card">
+        <div class="anel-wrap">
+          <svg class="anel" viewBox="0 0 120 120">
+            <circle class="trilha" cx="60" cy="60" r="${R_ANEL}"></circle>
+            <circle class="prog" id="anel-prog" cx="60" cy="60" r="${R_ANEL}"
+              stroke-dasharray="${CIRC.toFixed(2)}"
+              stroke-dashoffset="${off.toFixed(2)}"></circle>
+          </svg>
+          <div class="timer-centro">
+            <div class="timer" id="timer-text">${fmt(x.restante)}</div>
+            <div class="timer-label">descanso</div>
+          </div>
+        </div>
+
+        <div class="prox">A seguir: <b>${esc(e.nome)}</b></div>
+        <div class="prox-sub">Série ${serieAtual} de ${e.series} · ${alvoExercicio(e)}</div>
+
+        ${e.dica ? `<div class="dica"><div class="dica-t">Dica</div><div class="dica-c">${esc(e.dica).replace(/\n/g,'<br>')}</div></div>` : ''}
+
+        <div class="row-btns">
+          <button class="btn ghost" onclick="addTempo(20)">+ 20s</button>
+          <button class="btn ghost" onclick="pularDescanso()">Pular descanso</button>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ---- Série ativa ---- */
+  const inputs = (() => {
+    if (e.tipo === 'iso'){
+      return `<div class="inputs um">
+        <label>Tempo (segundos)
+          <input id="in-tempo" type="number" inputmode="numeric" min="0" value="${e.tempo}">
+        </label>
+      </div>`;
+    }
+    if (e.tipo === 'corpo'){
+      return `<div class="inputs um">
+        <label>Reps feitas
+          <input id="in-reps" type="number" inputmode="numeric" min="0" value="${e.repsMin}">
+        </label>
+      </div>`;
+    }
+    return `<div class="inputs">
+      <label>Reps feitas
+        <input id="in-reps" type="number" inputmode="numeric" min="0" value="${e.repsMin}">
+      </label>
+      <label>Carga (kg)
+        <input id="in-carga" type="number" inputmode="decimal" min="0" step="0.5" value="${e.carga}">
+      </label>
+    </div>`;
+  })();
+
+  return `
+    <header>
+      <button class="icon-btn" onclick="sairTreino()">✕</button>
+      <h1>Treino ${x.letra}</h1>
+    </header>
+
+    ${bannerRetomado}
+    ${blocoTopo(x)}
+    ${bannerSkip}
+
+    <div class="exec-card">
+      <div class="exec-top">
+        <div class="ex-nome">${esc(e.nome)}</div>
+        ${e.tecnica ? `<span class="tag-tec">${TECNICAS[e.tecnica].curto}</span>` : ''}
+      </div>
+
+      <div class="serie-badge">Série ${serieAtual} de ${e.series}</div>
+      <div class="alvo">${alvoExercicio(e)}</div>
+
+      ${e.tecnica ? `<div class="dica"><div class="dica-t">Técnica</div><div class="dica-c">${TECNICAS[e.tecnica].nome}</div></div>` : ''}
+      ${e.dica ? `<div class="dica"><div class="dica-t">Dica de execução</div><div class="dica-c">${esc(e.dica).replace(/\n/g,'<br>')}</div></div>` : ''}
+
+      ${inputs}
+
+      <button class="btn primary" onclick="concluirSerie()">✓ Concluir série</button>
+
+      ${x.fila.length > 1 ? `
+        <button class="btn ghost" onclick="pularExercicio()" style="margin-top:10px;color:var(--accent)">⏭ Pular exercício</button>
+        <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5">
+          Ou toque num exercício na fila acima para ir direto a ele.
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="progresso">
+      ${restantes} exercício(s) na fila · ${totalSeriesFeitas} série(s) registrada(s)
+    </div>
+  `;
+}
+
+function agruparRegistros(regs){
+  const g = {};
+  (regs || []).forEach(r => {
+    if (!g[r.nome]) g[r.nome] = [];
+    g[r.nome].push(r);
+  });
+  return Object.keys(g).sort((a,b) => a.localeCompare(b)).map(nome => ({
+    nome,
+    itens: g[nome].slice().sort((a,b) => a.serie - b.serie)
+  }));
+}
+
+/* ---------------- HISTÓRICO ---------------- */
+function telaHistorico(){
+  const h = app.historico;
+  const stats = LETRAS.map(l => ({ l, n: h.filter(x => x.letra === l).length }));
+
+  return `
+    <header>
+      <button class="icon-btn" onclick="irHome()">←</button>
+      <h1>Histórico</h1>
+    </header>
+
+    <div class="stats">
+      ${stats.map(s => `<div class="stat"><div class="n">${s.n}</div><div class="l">${s.l}</div></div>`).join('')}
+    </div>
+
+    ${h.length ? h.map(x => {
+      const aberto = ui.histAberto === x.id;
+      const grupos = aberto ? agruparRegistros(x.registros) : [];
+      return `
+        <div class="hist-item">
+          <div class="hist-linha" onclick="toggleHist('${x.id}')">
+            <div class="hist-letra">${x.letra}</div>
+            <div class="hist-info">
+              <div class="hist-data">${fmtData(x.data)}</div>
+              <div class="hist-sub">${x.registros.length} série(s) · ${fmtDur(x.duracao)}${x.pendentes && x.pendentes.length ? ' · incompleto' : ''}</div>
+            </div>
+            <div class="hist-seta">${aberto ? '▴' : '▾'}</div>
+          </div>
+          ${aberto ? `<div class="hist-det">
+            ${grupos.map(g => `
+              <div class="grupo">
+                <div class="grupo-titulo">${esc(g.nome)}</div>
+                ${g.itens.map(r => `<div class="grupo-item"><span>${r.serie}ª série</span><span>${descRegistro(r)}${r.tecnica && TECNICAS[r.tecnica] ? ' · ' + TECNICAS[r.tecnica].curto : ''}</span></div>`).join('')}
+              </div>`).join('')}
+            ${x.pendentes && x.pendentes.length ? `<div class="pendentes">Não realizados: ${x.pendentes.map(esc).join(', ')}</div>` : ''}
+          </div>` : ''}
+        </div>`;
+    }).join('') : `<p class="vazio">Nenhum treino registrado ainda.<br>Conclua um treino para vê-lo aqui.</p>`}
+
+    ${h.length ? `<button class="btn danger" onclick="limparHistorico()">Apagar histórico</button>` : ''}
+  `;
+}
+
+/* ---------------- CONFIGURAÇÕES ---------------- */
+function telaConfig(){
+  const c = app.config;
+  return `
+    <header>
+      <button class="icon-btn" onclick="irHome()">←</button>
+      <h1>Ajustes</h1>
+    </header>
+
+    <h2>Tema</h2>
+    <div class="temas">
+      ${TEMAS.map(t => `
+        <button class="tema-card ${c.tema === t.id ? 'ativo' : ''}" onclick="mudarTema('${t.id}')">
+          <div class="tema-paleta">
+            ${t.cores.map(cor => `<i style="background:${cor}"></i>`).join('')}
+          </div>
+          <div class="tema-nome">${t.nome}</div>
+          <div class="tema-desc">${t.desc}</div>
+        </button>`).join('')}
+    </div>
+
+    <h2>Timer</h2>
+    <div class="opcao">
+      <div>
+        <div class="txt">Som</div>
+        <div class="sub">Tique-taque e alarme no descanso</div>
+      </div>
+      <div class="switch ${c.som ? 'on' : ''}" onclick="toggleConfig('som')"></div>
+    </div>
+    <div class="opcao">
+      <div>
+        <div class="txt">Vibração</div>
+        <div class="sub">Se o aparelho suportar</div>
+      </div>
+      <div class="switch ${c.vibracao ? 'on' : ''}" onclick="toggleConfig('vibracao')"></div>
+    </div>
+
+    <h2>Backup</h2>
+    <p style="font-size:12.5px;color:var(--muted);margin:0 0 4px">
+      Exporte antes de trocar de celular ou limpar o navegador.
+      O arquivo contém treinos, histórico e ajustes.
+    </p>
+    <button class="btn primary" onclick="exportarBackup()">⬇ Baixar arquivo de backup</button>
+    <button class="btn ghost" onclick="copiarBackup()">⧉ Copiar backup</button>
+    <button class="btn ghost" onclick="document.getElementById('arquivo-backup').click()">⬆ Importar arquivo</button>
+    <input id="arquivo-backup" type="file" accept="application/json,.json"
+           style="display:none" onchange="importarArquivo(this)">
+
+    <textarea id="backup-texto" placeholder="Cole aqui o conteúdo de um backup para restaurar…"></textarea>
+    <button class="btn ghost" onclick="importarTexto()">Restaurar do texto</button>
+
+    <h2>Zona de risco</h2>
+    <button class="btn danger" onclick="apagarTudo()">Apagar todos os dados</button>
+
+    <p class="rodape">Treino · versão 2.4<br>Seus dados ficam salvos apenas neste aparelho.</p>
+  `;
+}
+
+/* ============================================================
+   NAVEGAÇÃO
+============================================================ */
+function irHome(){
+  pararTimer();
+  liberarWakeLock();
+  limparSessao();
+  ui.tela = 'home';
+  ui.letra = null;
+  ui.editando = null;
+  ui.exec = null;
+  ui.histAberto = null;
+  ui.skipFeedback = null;
+  ui.retomadoEm = 0;
+  render();
+}
+function abrirTreino(l){
+  ui.letra = l;
+  ui.editando = null;
+  ui.tela = 'treino';
+  render();
+}
+function abrirHistorico(){
+  pararTimer();
+  ui.tela = 'historico';
+  ui.histAberto = null;
+  render();
+}
+function abrirConfig(){
+  pararTimer();
+  ui.tela = 'config';
+  render();
+}
+
+function sairTreino(){
+  const x = ui.exec;
+  if (!x || x.fase === 'fim'){ irHome(); return; }
+
+  if (x.registros.length === 0){
+    if (!confirm('Sair do treino? Nada será salvo no histórico.')) return;
+    irHome();
+    return;
+  }
+  if (!confirm(`Encerrar o treino agora?\n\n${x.registros.length} série(s) serão salvas no histórico.`)) return;
+  finalizarTreino();
+}
+
+/* ============================================================
+   AÇÕES: TREINO / EXERCÍCIOS
+============================================================ */
+function aoMudarTipo(){
+  const sel = document.getElementById('f-tipo');
+  if (!sel) return;
+  const t = sel.value;
+  const lr = document.getElementById('linha-reps');
+  const lt = document.getElementById('linha-tempo');
+  const lc = document.getElementById('linha-carga');
+  if (lr) lr.style.display = (t === 'iso') ? 'none' : '';
+  if (lt) lt.style.display = (t === 'iso') ? '' : 'none';
+  if (lc) lc.style.display = (t === 'peso') ? '' : 'none';
+}
+
+function salvarDescricao(v){
+  app.treinos[ui.letra].descricao = (v || '').trim();
+  salvarApp();
+}
+
+function salvarExercicio(){
+  const nome = document.getElementById('f-nome').value.trim();
+  if (!nome){ alert('Digite o nome do exercício.'); return; }
+
+  const tipo = document.getElementById('f-tipo').value;
+  const novo = normEx({
+    nome,
+    tipo,
+    series: document.getElementById('f-series').value,
+    repsMin: document.getElementById('f-repsMin').value,
+    repsMax: document.getElementById('f-repsMax').value,
+    tempo: document.getElementById('f-tempo').value,
+    carga: document.getElementById('f-carga').value,
+    descanso: document.getElementById('f-descanso').value,
+    tecnica: document.getElementById('f-tecnica').value,
+    dica: document.getElementById('f-dica').value
+  });
+
+  const lista = app.treinos[ui.letra].exercicios;
+  if (ui.editando !== null && lista[ui.editando]){
+    novo.id = lista[ui.editando].id;
+    lista[ui.editando] = novo;
+    ui.editando = null;
+  } else {
+    lista.push(novo);
+  }
+  salvarApp();
+  render();
+}
+
+function editarExercicio(i){
+  ui.editando = i;
+  render();
+  setTimeout(() => {
+    const el = document.getElementById('form-add');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 60);
+}
+
+function cancelarEdicao(){
+  ui.editando = null;
+  render();
+}
+
+function excluirExercicio(i){
+  const e = app.treinos[ui.letra].exercicios[i];
+  if (!e) return;
+  if (!confirm('Excluir "' + e.nome + '"?')) return;
+  app.treinos[ui.letra].exercicios.splice(i, 1);
+  if (ui.editando === i) ui.editando = null;
+  else if (ui.editando !== null && ui.editando > i) ui.editando--;
+  salvarApp();
+  render();
+}
+
+/* ============================================================
+   AÇÕES: EXECUÇÃO
+============================================================ */
+function iniciarTreino(){
+  const l = ui.letra;
+  const t = app.treinos[l];
+  if (!t.exercicios.length){ alert('Adicione pelo menos um exercício.'); return; }
+
+  ui.exec = {
+    letra: l,
+    fila: t.exercicios.map((_, i) => i),
+    seriesFeitas: {},
+    fase: 'ativa',
+    restante: 0,
+    restTotal: 0,
+    restEndsAt: 0,
+    registros: [],
+    inicio: Date.now(),
+    duracao: 0,
+    pendentes: []
+  };
+  ui.tela = 'exec';
+  ui.skipFeedback = null;
+  ui.retomadoEm = 0;
+  salvarSessao();
+  solicitarWakeLock();
+  render();
+}
+
+function concluirSerie(){
+  const x = ui.exec;
+  if (!x || x.fase !== 'ativa') return;
+  if (!x.fila.length) return;
+
+  const cur = x.fila[0];
+  const lista = app.treinos[x.letra].exercicios;
+  const e = lista[cur];
+  if (!e){ irHome(); return; }
+
+  const reg = {
+    nome: e.nome,
+    serie: (x.seriesFeitas[cur] || 0) + 1,
+    tecnica: e.tecnica || ''
+  };
+
+  if (e.tipo === 'iso'){
+    const el = document.getElementById('in-tempo');
+    reg.segundos = el && el.value !== '' ? Number(el.value) : e.tempo;
+  } else {
+    const repsEl = document.getElementById('in-reps');
+    reg.reps = repsEl && repsEl.value !== '' ? Number(repsEl.value) : e.repsMin;
+    if (e.tipo === 'peso'){
+      const cargaEl = document.getElementById('in-carga');
+      reg.carga = cargaEl && cargaEl.value !== '' ? Number(cargaEl.value) : e.carga;
+    }
+  }
+
+  x.registros.push(reg);
+  const feitas = (x.seriesFeitas[cur] || 0) + 1;
+  x.seriesFeitas[cur] = feitas;
+
+  if (feitas >= e.series) x.fila.shift();
+
+  if (!x.fila.length){ finalizarTreino(); return; }
+
+  const desc = Number(e.descanso) || 0;
+  if (desc > 0){
+    iniciarDescanso(desc);
+  } else {
+    x.fase = 'ativa';
+    salvarSessao();
+    render();
+  }
+}
+
+/* *** PULAR / IR PARA EXERCÍCIO *** */
+function rotacionarFila(p){
+  const x = ui.exec;
+  if (!x || p <= 0 || p >= x.fila.length) return false;
+  x.fila = x.fila.slice(p).concat(x.fila.slice(0, p));
+  return true;
+}
+
+function pularExercicio(){
+  const x = ui.exec;
+  if (!x) return;
+  if (x.fase !== 'ativa' && x.fase !== 'descanso') return;
+  if (x.fila.length <= 1){
+    alert('Não há outros exercícios na fila.');
+    return;
+  }
+  pararTimer();
+  rotacionarFila(1);
+  x.fase = 'ativa';
+  x.restante = 0; x.restEndsAt = 0;
+
+  const nome = app.treinos[x.letra].exercicios[x.fila[0]].nome;
+  const fb = { nome, ts: Date.now(), tipo:'pular' };
+  ui.skipFeedback = fb;
+  somPulo(); vib(50);
+  salvarSessao();
+  render();
+  setTimeout(() => {
+    if (ui.skipFeedback === fb){
+      ui.skipFeedback = null;
+      if (ui.tela === 'exec') render();
+    }
+  }, 4500);
+}
+
+function irParaExercicio(p){
+  const x = ui.exec;
+  if (!x) return;
+  if (p <= 0 || p >= x.fila.length) return;
+  if (x.fase !== 'ativa' && x.fase !== 'descanso') return;
+
+  pararTimer();
+  rotacionarFila(p);
+  x.fase = 'ativa';
+  x.restante = 0; x.restEndsAt = 0;
+
+  const nome = app.treinos[x.letra].exercicios[x.fila[0]].nome;
+  const fb = { nome, ts: Date.now(), tipo:'ir' };
+  ui.skipFeedback = fb;
+  somPulo(); vib(50);
+  salvarSessao();
+  render();
+  setTimeout(() => {
+    if (ui.skipFeedback === fb){
+      ui.skipFeedback = null;
+      if (ui.tela === 'exec') render();
+    }
+  }, 4500);
+}
+
+function finalizarTreino(){
+  const x = ui.exec;
+  if (!x) return;
+  pararTimer();
+  liberarWakeLock();
+
+  const dur = Math.round((Date.now() - x.inicio) / 1000);
+  x.duracao = dur;
+  x.fase = 'fim';
+
+  x.pendentes = x.fila.map(i => {
+    const ex = app.treinos[x.letra].exercicios[i];
+    return ex ? ex.nome : '';
+  }).filter(Boolean);
+
+  app.historico.unshift({
+    id: uid(),
+    data: Date.now(),
+    letra: x.letra,
+    duracao: dur,
+    registros: x.registros,
+    pendentes: x.pendentes
+  });
+  if (app.historico.length > 800) app.historico.length = 800;
+
+  salvarApp();
+  limparSessao();
+  somFim();
+  vib([220, 100, 220, 100, 220]);
+  render();
+}
+
+/* ============================================================
+   AÇÕES: HISTÓRICO
+============================================================ */
+function toggleHist(id){
+  ui.histAberto = (ui.histAberto === id) ? null : id;
+  render();
+}
+function limparHistorico(){
+  if (!confirm('Apagar todo o histórico de treinos? Isso não afeta suas fichas.')) return;
+  app.historico = [];
+  salvarApp();
+  render();
+}
+
+/* ============================================================
+   AÇÕES: SUGESTÃO DE TROCA
+============================================================ */
+function contagemLetra(l){
+  return app.historico.filter(h => h.letra === l).length;
+}
+function precisaTrocar(l){
+  const n = contagemLetra(l);
+  const disp = (app.config.dispensado && app.config.dispensado[l]) || 0;
+  return n >= 4 && n > disp;
+}
+function dispensarTroca(l){
+  app.config.dispensado = app.config.dispensado || {};
+  app.config.dispensado[l] = contagemLetra(l);
+  salvarApp();
+  render();
+}
+
+/* ============================================================
+   AÇÕES: CONFIGURAÇÕES
+============================================================ */
+function mudarTema(id){
+  app.config.tema = id;
+  salvarApp();
+  render();
+}
+function toggleConfig(chave){
+  app.config[chave] = !app.config[chave];
+  salvarApp();
+  if (app.config[chave] && chave === 'som'){ ac(); somInicio(); }
+  render();
+}
+function apagarTudo(){
+  if (!confirm('Isso apaga treinos, histórico e ajustes. Continuar?')) return;
+  if (!confirm('Tem certeza absoluta? Não há como desfazer sem um backup.')) return;
+  liberarWakeLock();
+  localStorage.removeItem(LS_KEY);
+  localStorage.removeItem(LS_ANTIGO);
+  localStorage.removeItem(LS_SESSAO);
+  app = dadosIniciais();
+  irHome();
+}
+
+/* ============================================================
+   BACKUP
+============================================================ */
+function pacoteBackup(){
+  return {
+    app: 'treino-academia',
+    versao: 2,
+    exportado: new Date().toISOString(),
+    dados: app
+  };
+}
+
+function exportarBackup(){
+  const txt = JSON.stringify(pacoteBackup(), null, 2);
+  try {
+    const blob = new Blob([txt], { type:'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'treino-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch(e){
+    alert('Não foi possível baixar o arquivo. Use "Copiar backup".');
+  }
+}
+
+async function copiarBackup(){
+  const txt = JSON.stringify(pacoteBackup(), null, 2);
+  try {
+    await navigator.clipboard.writeText(txt);
+    alert('Backup copiado. Cole num bloco de notas, e-mail ou nuvem.');
+  } catch(e){
+    const ta = document.getElementById('backup-texto');
+    if (ta){ ta.value = txt; ta.select(); }
+    alert('Não foi possível copiar automaticamente. O texto foi colocado na caixa abaixo — selecione e copie.');
+  }
+}
+
+function importarArquivo(input){
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const ta = document.getElementById('backup-texto');
+    if (ta) ta.value = String(r.result);
+    restaurarDeTexto(String(r.result), true);
+  };
+  r.onerror = () => alert('Não foi possível ler o arquivo.');
+  r.readAsText(f);
+  input.value = '';
+}
+
+function importarTexto(){
+  const ta = document.getElementById('backup-texto');
+  const txt = ta ? ta.value.trim() : '';
+  if (!txt){ alert('Cole o conteúdo do backup na caixa primeiro.'); return; }
+  restaurarDeTexto(txt, false);
+}
+
+function restaurarDeTexto(txt, jaConfirmado){
+  let obj;
+  try { obj = JSON.parse(txt); }
+  catch(e){ alert('Backup inválido: não é um JSON válido.'); return; }
+
+  const dados = obj && obj.dados ? obj.dados : obj;
+  if (!dados || typeof dados !== 'object' || !dados.treinos){
+    alert('Backup inválido: estrutura não reconhecida.');
+    return;
+  }
+  if (!jaConfirmado){
+    if (!confirm('Restaurar este backup? Os dados atuais serão substituídos.')) return;
+  }
+  app = normalizarApp(dados);
+  salvarApp();
+  pararTimer();
+  liberarWakeLock();
+  limparSessao();
+  ui.exec = null;
+  ui.tela = 'home';
+  ui.letra = null;
+  ui.editando = null;
+  ui.skipFeedback = null;
+  ui.retomadoEm = 0;
+  alert('Backup restaurado com sucesso.');
+  render();
+}
+
+/* ============================================================
+   RETOMAR SESSÃO
+============================================================ */
+function tentarRestaurarSessao(){
+  const s = carregarSessao();
+  if (!s) return false;
+
+  const t = app.treinos[s.letra];
+  if (!t){ limparSessao(); return false; }
+
+  s.fila = (s.fila || []).filter(i => t.exercicios[i]);
+  if (!s.fila.length){ limparSessao(); return false; }
+
+  s.registros = Array.isArray(s.registros) ? s.registros : [];
+  s.seriesFeitas = s.seriesFeitas || {};
+  s.inicio = s.inicio || Date.now();
+  s.fase = s.fase === 'descanso' ? 'descanso' : 'ativa';
+
+  if (s.fase === 'descanso'){
+    const rest = Math.max(0, Math.ceil((s.restEndsAt - Date.now()) / 1000));
+    if (rest <= 0){
+      s.fase = 'ativa';
+      s.restante = 0;
+    } else {
+      s.restante = rest;
+    }
+  }
+
+  ui.exec = s;
+  ui.tela = 'exec';
+  ui.retomadoEm = Date.now();
+  return true;
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+const retomou = tentarRestaurarSessao();
+render();
+if (retomou && ui.exec && ui.exec.fase === 'descanso') iniciarTimer();
+if (retomou && ui.exec && ui.exec.fase !== 'fim') solicitarWakeLock();
+
+/* Salvamentos automáticos */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') salvarSessao();
+});
+window.addEventListener('pagehide', salvarSessao);
+window.addEventListener('beforeunload', salvarSessao);
+
+/* Recalcula o timer e reativa o Wake Lock quando volta do segundo plano */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible'){
+    if (ui.exec && ui.exec.fase === 'descanso' && !timerId) iniciarTimer();
+    if (ui.exec && ui.exec.fase !== 'fim') solicitarWakeLock();
+  }
+});
+
+/* Registra o Service Worker (PWA) */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('./sw.js')
+      .then((reg) => console.log('SW registrado:', reg.scope))
+      .catch((err) => console.error('Falha ao registrar SW:', err));
+  });
+}
+</script>
+</body>
+</html>
